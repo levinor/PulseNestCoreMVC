@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using PulseNestCoreMVC.Models;
 
 namespace PulseNestCoreMVC.Controllers
@@ -12,26 +13,22 @@ namespace PulseNestCoreMVC.Controllers
     {
         public IActionResult Index()
         {
+            ViewData["Title"] = "PulseNest";
             return View();
         }
 
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
 
+        //public async Task<ActionResult> PulseNest()
+        public IActionResult PulseNest()
+        {
+            ViewData["Title"] = "PulseNest";
             return View();
         }
 
-        public IActionResult Contact()
+        public void beginListen()
         {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
+            nestListener nl = new nestListener();
+            nl.startListening();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
