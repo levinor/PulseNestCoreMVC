@@ -7,11 +7,11 @@ using PulseNestCoreMVC.Models;
 
 namespace PulseNestCoreMVC.Hubs
 {
-    public class updaterHub : Hub
+    public class updaterHub : Hub<IUpdateMap>
     {
-        public async Task SendNewPoint( mapPoint cords)
+        public async Task ReceivePoint( mapPoint cords)
         {
-            await Clients.All.SendAsync("ReceivePoint", cords);
+            await Clients.All.ReceivePoint(cords);
         }
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PulseNestCoreMVC.Controllers;
 using PulseNestCoreMVC.Hubs;
 
 namespace PulseNestCoreMVC
@@ -25,9 +26,16 @@ namespace PulseNestCoreMVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
             services.AddSignalR();
+            services.AddHostedService<BackgroundListener>();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);       
+            services.AddCors(options => options.AddPolicy("CorsPolicy",
+            builder =>
+            {
+                builder.AllowAnyMethod().AllowAnyHeader()
+                       .WithOrigins("http://localhost:53675", "https://localhost:44376")
+                       .AllowCredentials();
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,7 +55,7 @@ namespace PulseNestCoreMVC
             app.UseStaticFiles();
             app.UseSignalR(routes =>
             {
-                routes.MapHub<updaterHub>("/updaterHub");
+                routes.MapHub<updaterHub>("/Hubs/updaterHub");
             });
 
             app.UseMvc(routes =>
@@ -56,6 +64,8 @@ namespace PulseNestCoreMVC
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            app.UseCors("CorsPolicy");
+
         }
     }
 }
