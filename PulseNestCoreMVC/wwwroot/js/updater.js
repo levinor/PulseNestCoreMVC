@@ -5,16 +5,16 @@ var connection = new signalR.HubConnectionBuilder()
     .build();
 
 
+
 connection.on("ReceivePoint", function(data) {
     console.log("Recibido punto");
     console.log(data);
-    svg.selectAll("circle")
-        .data(data.coordinates).enter()
-        .append("circle")
-        .attr("cx", function (d) { console.log(projection(d)); return projection(d)[0]; })
-        .attr("cy", function (d) { return projection(d)[1]; })
-        .attr("r", "8px")
-        .attr("fill", data.color)
+    var coordinates = projection(data.coordinates)
+    svg.append("circle")
+        .attr("cx", coordinates[0])
+        .attr("cy", coordinates[1])
+        .attr("r", "5px")
+        .attr("fill", "red");
 });
 
 connection.onclose(() => setTimeout(startSignalRConnection(connection), 1000));

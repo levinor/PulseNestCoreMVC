@@ -23,11 +23,11 @@ var width = getWidth(),
     height = getHeight();
 
 var svg = d3.select("body").append("svg")
-    .attr("width", width - (width/100)*10)
-    .attr("height", height - (height / 100) * 10);
+    .attr("width", width )
+    .attr("height", height );
 
 var projection = d3.geo.equirectangular()
-    .scale(175)
+    .scale(250)
     .translate([width / 2, height / 2])
 
 
