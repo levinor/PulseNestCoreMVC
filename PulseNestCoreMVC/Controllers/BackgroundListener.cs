@@ -55,11 +55,11 @@ namespace PulseNestCoreMVC.Controllers
             {
                 _logger.LogInformation($"Worker running at: {DateTime.Now}");
                 listen(tc, love, Feeling.love, stoppingToken);
-                listen(tc, hate, Feeling.love, stoppingToken);
-                listen(tc, joy, Feeling.love, stoppingToken);
-                listen(tc, sadness, Feeling.love, stoppingToken);
-                listen(tc, fear, Feeling.love, stoppingToken);
-                drawing(stoppingToken);
+                //listen(tc, hate, Feeling.love, stoppingToken);
+                //listen(tc, joy, Feeling.love, stoppingToken);
+                //listen(tc, sadness, Feeling.love, stoppingToken);
+                //listen(tc, fear, Feeling.love, stoppingToken);
+                await drawing(stoppingToken);
             }
 
         }
@@ -104,13 +104,15 @@ namespace PulseNestCoreMVC.Controllers
             }
             else
             {
-                if (json.SelectToken("place.bounding_box.coordinates") != null) {
+                if (json.SelectToken("place.bounding_box.coordinates") != null)
+                {
                     mapPoint coords = new mapPoint();
                     coords.coordinates = json.SelectToken("place.bounding_box.coordinates")[0][0].ToObject<string[]>();
                     coords.color = "Red";
                     pool.Add(coords);
                 }
-                else {
+                else
+                {
                     if (json.SelectToken("retweeted_status.coordinates") != null)
                     {
                         mapPoint coords = new mapPoint();
