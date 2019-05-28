@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using PulseNestCoreMVC.Controllers;
 using PulseNestCoreMVC.Hubs;
 
@@ -33,7 +34,7 @@ namespace PulseNestCoreMVC
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -59,7 +60,7 @@ namespace PulseNestCoreMVC
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
             app.UseCors("CorsPolicy");
-
+            loggerFactory.AddFile("Logs/myapp-{Date}.txt");
         }
     }
 }
