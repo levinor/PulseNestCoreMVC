@@ -13,12 +13,14 @@ connection.on("ReceivePoint", function(data) {
     svg.append("circle")
         .attr("cx", coordinates[0])
         .attr("cy", coordinates[1])
-        .attr("r", "5px")
+        .attr("r", "4px")
         .attr("fill", data.color)
         .attr("opacity", 1)
         .transition()
         .duration(3000)
-        .attr("opacity", 0);
+        .attr("opacity", 0)
+        .remove();
+    
 });
 
 connection.onclose(() => setTimeout(startSignalRConnection(connection), 1000));
