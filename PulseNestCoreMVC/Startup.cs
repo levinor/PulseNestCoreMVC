@@ -60,7 +60,7 @@ namespace PulseNestCoreMVC
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
             app.UseCors("CorsPolicy");
-            loggerFactory.AddFile("Logs/myapp-{Date}.txt");
+            loggerFactory.AddFile("Logs/log-{Date}.txt");
         }
     }
 }
