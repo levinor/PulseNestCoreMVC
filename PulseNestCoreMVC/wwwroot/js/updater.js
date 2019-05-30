@@ -1,21 +1,32 @@
-﻿"use strict";
+﻿
+var connection = new signalR.HubConnectionBuilder()
+    .withUrl("/Hubs/updaterHub")
+    .configureLogging(signalR.LogLevel.Information)
+    .build();
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/updaterHub").build();
 
-connection.on("ReceivePoint", function (data, color) {
-    var circles = svg.selectAll("circle")
-        .data(data)
-        .enter()
-        .append("circle")
-        .attr("cx", function (d) {
-            return projection([d.longitude, d.latitude])[0];
-        })
-        .attr("cy", function (d) {
-            return projection([d["longitude"], d["latitude"]])[1];
-        })
-        .attr("r", 2)
-    Console.log("Recibido punto");
 
+connection.on("ReceivePoint", function(data) {
+    console.log("Recibido punto");
+    console.log(data);
+    var coordinates = projection(data.coordinates)
+    svg.append("circle")
+        .attr("cx", coordinates[0])
+        .attr("cy", coordinates[1])
+        .attr("r", "4px")
+        .attr("fill", data.color)
+        .attr("opacity", 1)
+        .transition()
+        .duration(3000)
+        .attr("opacity", 0)
+        .remove();
+    
 });
 
-connection.start()
+connection.onclose(() => setTimeout(startSignalRConnection(connection), 1000));
+
+var startSignalRConnection = connection => connection.start()
+    .then(() => console.info('Websocket Connection Established'))
+    .catch(err => console.error('SignalR Connection Error: ', err));
+
+connection.start();

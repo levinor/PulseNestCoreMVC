@@ -25,12 +25,6 @@ namespace PulseNestCoreMVC.Controllers
             return View();
         }
 
-        public void beginListen()
-        {
-            nestListener nl = new nestListener();
-            nl.startListening();
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
