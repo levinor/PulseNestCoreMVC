@@ -32,6 +32,11 @@ namespace PulseNestCoreMVC.Controllers
         private int tweetsSinCoordenadas = 0;
         private int tweetsSinSentimiento = 0;
         private double procentajeExito = 0.0;
+        static int tweetsfelicidad = 0;
+        static int tweetsascoEIra = 0;
+        static int tweetsmiedoOSorpresa = 0;
+        static int tweetstristeza = 0;
+
 
         List<mapPoint> pool = new List<mapPoint>();
         Random rdm = new Random();
@@ -68,7 +73,7 @@ namespace PulseNestCoreMVC.Controllers
                     miedoOSorpresa = feelings.Find(x => x.name.Contains("miedoOSorpresa")).words.ToString();
                     tristeza = feelings.Find(x => x.name.Contains("tristeza")).words.ToString();
 
-                    searchString = felicidad + ", " + ascoEIra + ", " + miedoOSorpresa + ", " + tristeza;
+                    searchString = tristeza + ", " + ascoEIra + ", " + felicidad + ", " +  miedoOSorpresa;
 
                     aFelicidad = felicidad.Split(new string[] { ", " }, StringSplitOptions.None);
                     aAscoEIra = ascoEIra.Split(new string[] { ", " }, StringSplitOptions.None);
@@ -81,7 +86,9 @@ namespace PulseNestCoreMVC.Controllers
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {           
             listen(stoppingToken);
+            listen(stoppingToken);
             drawing(stoppingToken);
+
         }
 
         private async Task listen(CancellationToken stoppingToken)
@@ -113,9 +120,7 @@ namespace PulseNestCoreMVC.Controllers
                catch (Exception e) {
                 _logger.LogError(e.Message);
                 listen(stoppingToken);
-            }
-            
-                
+            }           
 
         }
 
@@ -133,20 +138,28 @@ namespace PulseNestCoreMVC.Controllers
                 tweet = tweet.ToLower().Replace('#', ' ');
 
                 bool felicidad = aFelicidad.Any(palabra => tweet.IndexOf(palabra, StringComparison.OrdinalIgnoreCase) >= 0); ;
-                if (felicidad)
+                if (felicidad){
+                    tweetsfelicidad++;
                     return Feel.felicidad;
+                }
 
                 bool ascoEIra = aAscoEIra.Any(palabra => tweet.IndexOf(palabra, StringComparison.OrdinalIgnoreCase) >= 0);
-                if (ascoEIra)
+                if (ascoEIra) {
+                    tweetsascoEIra++;
                     return Feel.ascoEIra;
+                }
 
                 bool miedoOSorpresa = aMiedoOSorpresa.Any(palabra => tweet.IndexOf(palabra, StringComparison.OrdinalIgnoreCase) >= 0);
-                if (miedoOSorpresa)
+                if (miedoOSorpresa) {
+                    tweetsmiedoOSorpresa++;
                     return Feel.miedoOSorpresa;
+                }
 
                 bool tristeza = aTristeza.Any(palabra => tweet.IndexOf(palabra, StringComparison.OrdinalIgnoreCase) >= 0);
-                if (tristeza)
+                if (tristeza) {
+                    tweetstristeza++;
                     return Feel.tristeza;
+                }
 
                 if (json.SelectToken("retweeted_status") != null )
                     return analizeFeeling(json.SelectToken("retweeted_status"));
