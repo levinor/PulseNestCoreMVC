@@ -1,5 +1,6 @@
 ﻿using LinqToTwitter;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -17,15 +18,16 @@ namespace PulseNestCoreMVC.Controllers
 {
     public class BackgroundListener : BackgroundService
     {
-        static string _consumerKey = "nA3F92Y5tvm9GIWVsVNHDUZbX";
-        static string _consumerSecret = "PCH3N0WYT4fFnvRRK1egAJBpjGwg1fRPvnIMlSrJ7ye7vvpefU";
-        static string _accessToken = "14935738-TcRyn9YuS43yT3eL0tPttK6XOy99wlSDXTEgVCW4L";
-        static string _accessTokenSecret = "lT4A8ZbqRssMQ2YkD8Cwwo8g7QIgftsIWBDUFplz1O23g";
+        static string _consumerKey;
+        static string _consumerSecret ;
+        static string _accessToken;
+        static string _accessTokenSecret;
         enum Feel { none, felicidad, ascoEIra, miedoOSorpresa, tristeza };
         private readonly IHubContext<updaterHub, IUpdateMap> _updaterHub;
         private readonly ILogger<BackgroundListener> _logger;
         List<City> cities = new List<City>();
         List<Feeling> feelings = new List<Feeling>();
+        private readonly IConfiguration _config;
 
         private int tweetsProcesados = 0;
         private int tweetsPintados = 0;
@@ -52,10 +54,15 @@ namespace PulseNestCoreMVC.Controllers
         static string[] aMiedoOSorpresa;
         static string[] aTristeza;
 
-        public BackgroundListener(ILogger<BackgroundListener> logger, IHubContext<updaterHub, IUpdateMap> updaterHub)
+        public BackgroundListener(ILogger<BackgroundListener> logger, IHubContext<updaterHub, IUpdateMap> updaterHub, IConfiguration config)
         {
             _logger = logger;
             _updaterHub = updaterHub;
+            _config = config;
+            _consumerKey = _config.GetSection("consumerKey").Value;
+             _consumerSecret = _config.GetSection("_consumerSecret").Value;
+             _accessToken = _config.GetSection("_accessToken").Value;
+             _accessTokenSecret = _config.GetSection("_accessTokenSecret").Value;
             try
             {
                 using (StreamReader r = new StreamReader(new HttpClient().GetStreamAsync("https://raw.githubusercontent.com/lutangar/cities.json/master/cities.json").Result))
